@@ -1,0 +1,20 @@
+// Service: C12880MA Spectrometer Custom Service
+// UUID: 0000FF00-0000-1000-8000-00805F9B34FB
+PRIMARY_SERVICE, 0000FF00-0000-1000-8000-00805F9B34FB
+
+// Characteristic: Pixels 0 to 95 
+// Data: 192 Bytes (96 x uint16_t)
+CHARACTERISTIC, 0000FF01-0000-1000-8000-00805F9B34FB, NOTIFY, "Pixels 0-95"
+
+// Characteristic: Pixels 96 to 191
+// Data: 192 Bytes (96 x uint16_t)
+CHARACTERISTIC, 0000FF02-0000-1000-8000-00805F9B34FB, NOTIFY, "Pixels 96-191"
+
+// Characteristic: Pixels 192 to 287
+// Data: 192 Bytes (96 x uint16_t)
+CHARACTERISTIC, 0000FF03-0000-1000-8000-00805F9B34FB, NOTIFY, "Pixels 192-287"
+
+// Characteristic: Control (Write without response)
+// Protocol: [Command Byte] [Value Byte]
+// Cmd 0x01: Toggle White LED (0=Off, 1=On)
+CHARACTERISTIC, 0000FF04-0000-1000-8000-00805F9B34FB, WRITE_WITHOUT_RESPONSE | DYNAMIC, "Sensor Control"
