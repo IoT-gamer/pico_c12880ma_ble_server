@@ -4,10 +4,10 @@ This project transforms a **Raspberry Pi Pico 2W** into a wireless micro-spectro
 
 ## Features
 * **288-Channel Sensing:** Full spectral readout spanning the sensor's optical range (340 nm – 850 nm).
+* **True Electronic Shutter:** Controls integration time natively by varying the physical accumulation delay between `START` pulses.
 * **Optimized BLE Notifications:** The 576-byte data payload is split into three 192-byte characteristics.
 * **Cooperative Flow Control:** Uses a non-blocking BTstack timer state machine (15 ms inter-chunk spacing) to yield CPU time to the CYW43 SPI bus, preventing `BTSTACK_ACL_BUFFERS_FULL` (`0x57`) drops.
 * **Remote Illumination Control:** Command-based GATT characteristic to wirelessly toggle the breakout board's onboard super-bright white LED.
-* **Pico-Optimized:** Built on the official Pico SDK and BTstack, utilizing hardware timers and ADC for precise bit-bang timing sequences.
 
 ## Hardware Setup
 ### Wiring Diagram
@@ -35,8 +35,9 @@ To handle the 576-byte array of `uint16_t` pixel values, the data is chunked int
 
 **2. Control Characteristic (WRITE_WITHOUT_RESPONSE)**
 **UUID:** `0xFF04`
-Accepts a 2-byte command packet: `[Command ID]` `[Value]`
-* `0x01:` Toggle White Illumination LED (`1` = On, `0` = Off).
+Accepts dynamic-length command packets (`[Command ID] [Value Bytes...]`)
+* **Cmd `0x01`:** Toggle White LED (`1` = On, `0` = Off) [2 Bytes Total].
+* **Cmd `0x02`:** Set Integration Time in milliseconds (uint16_t, Little Endian) [3 Bytes Total].
 
 ## Client Integration Notes (Mobile / Desktop)
 1. **MTU Negotiation:** Each notification carries a 192-byte payload plus a 3-byte ATT header (195 bytes total). Clients must request an **MTU >= 195** (e.g., `device.requestMtu(250)`) upon connecting so payloads are not truncated.

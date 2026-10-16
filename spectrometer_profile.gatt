@@ -15,6 +15,7 @@ CHARACTERISTIC, 0000FF02-0000-1000-8000-00805F9B34FB, NOTIFY, "Pixels 96-191"
 CHARACTERISTIC, 0000FF03-0000-1000-8000-00805F9B34FB, NOTIFY, "Pixels 192-287"
 
 // Characteristic: Control (Write without response)
-// Protocol: [Command Byte] [Value Byte]
-// Cmd 0x01: Toggle White LED (0=Off, 1=On)
+// Protocol: [Command Byte] [Value Bytes...]
+// Cmd 0x01: Toggle White LED (0=Off, 1=On) [2 Bytes Total]
+// Cmd 0x02: Set Integration Time (uint16_t, Little Endian) [3 Bytes Total]
 CHARACTERISTIC, 0000FF04-0000-1000-8000-00805F9B34FB, WRITE_WITHOUT_RESPONSE | DYNAMIC, "Sensor Control"

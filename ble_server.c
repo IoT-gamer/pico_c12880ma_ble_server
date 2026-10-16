@@ -86,15 +86,23 @@ static uint16_t att_read_callback(hci_con_handle_t connection_handle, uint16_t a
 }
 
 static int att_write_callback(hci_con_handle_t connection_handle, uint16_t att_handle, uint16_t transaction_mode, uint16_t offset, uint8_t *buffer, uint16_t buffer_size) {
-    // Control Characteristic
+    // Control Characteristic (0xFF04)
     if (att_handle == ATT_CHARACTERISTIC_0000FF04_0000_1000_8000_00805F9B34FB_01_VALUE_HANDLE) {
         if (buffer_size < 2) return 0; 
         
         uint8_t cmd = buffer[0];
-        uint8_t val = buffer[1];
 
-        if (cmd == 0x01) {
+        if (cmd == 0x01 && buffer_size >= 2) {
+            // Cmd 0x01: Set LED (1 Byte Payload)
+            uint8_t val = buffer[1];
             c12880ma_set_led(&spec_cfg, val > 0);
+        }
+        else if (cmd == 0x02 && buffer_size >= 3) {
+            // Cmd 0x02: Set Integration Time in milliseconds (2 Byte Payload, Little Endian)
+            uint16_t integration_ms = buffer[1] | (buffer[2] << 8);
+            
+            // Enforce a sensible minimum (1 ms)
+            spec_cfg.integration_time = integration_ms < 1 ? 1 : integration_ms;
         }
     }
     return 0;
